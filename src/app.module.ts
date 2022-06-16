@@ -11,7 +11,7 @@ import { UsersModule } from './users/users.module';
     MongooseModule.forRootAsync({
       useFactory: () => {
         return {
-          uri: 'mongodb://localhost:27017/anka',
+          uri: process.env.MONGO_URI,
           useNewUrlParser: true,
           useUnifiedTopology: true,
         };
