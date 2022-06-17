@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 
 export interface UserDocument extends mongoose.Document {
-    userId: number;
+    id: string;
     username: string;
     password: string;
 }

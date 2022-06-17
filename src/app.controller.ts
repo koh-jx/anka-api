@@ -2,17 +2,18 @@ import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';
 import { AuthService } from './auth/auth.service';
+import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private appService: AppService,
+  ) {}
 
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  async login(@Request() req) {
-    // curl -X POST http://localhost:3000/auth/login -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
-    // Password should be hashed before sending to this endpoint
-    return this.authService.login(req.user);
+  @Get('/')
+  sayHello() {
+    return this.appService.getHello();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -22,6 +23,4 @@ export class AppController {
     // Currently only have userId and username
     return req.user;
   }
-
-  // TODO: Create a user
 }
