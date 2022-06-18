@@ -19,7 +19,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    // Note: Can add more stuff in request via gwt-auth.guard.ts validate()
+    // Note: Can add more stuff in request via jwt-auth.guard.ts validate()
     // Currently only have userId and username
     return req.user;
   }

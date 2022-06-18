@@ -27,6 +27,7 @@ export class UsersController {
             await this.usersService.register(username, password);
             res.status(201).send();
         } catch (error: any) {
+            console.log(error)
             res.status(400).send({ 
                 error: "Could not register user",
                 error_description: error.message,
@@ -34,6 +35,10 @@ export class UsersController {
         }
     }
 
-
+    @Get('/:username')
+    async getUser(@Param('username') username: string) {
+        console.log(this.usersService.findOne(username))
+        return this.usersService.findOne(username);
+    }
 }
   
