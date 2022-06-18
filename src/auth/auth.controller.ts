@@ -20,8 +20,6 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('/login')
     async login(@Request() req) {
-      // curl -X POST http://localhost:3000/auth/login -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
-      // Password should be hashed in frontend before sending html request
       return this.authService.login(req.user);
     }
 }

@@ -35,10 +35,10 @@ export class UsersController {
         }
     }
 
-    @Get('/:username')
+    @Get('/exists/:username')
     async getUser(@Param('username') username: string) {
-        console.log(this.usersService.findOne(username))
-        return this.usersService.findOne(username);
+        const result = await this.usersService.findOne(username);
+        return result !== null;
     }
 }
   
