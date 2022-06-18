@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
+// import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 import { AuthService } from './auth.service';
 
@@ -22,5 +23,12 @@ export class AuthController {
     async login(@Request() req) {
       return this.authService.login(req.user);
     }
+
+    // @UseGuards(JwtAuthGuard)
+    // @Post('/logout')
+    // async logout(@Request() req) {
+    //   console.log("Logging out");
+    //   return this.authService.logout(req.user);
+    // }
 }
   

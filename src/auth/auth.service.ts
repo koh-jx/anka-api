@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -22,6 +22,7 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
+    // Currently just returning access_token, can use this endpoint to return other user-related info
     return {
       access_token: this.jwtService.sign(payload, { secret: process.env.JWT_SEC }),
     };
