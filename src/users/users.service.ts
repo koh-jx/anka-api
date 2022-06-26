@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, StringSchemaDefinition } from 'mongoose';
 
 import { User } from './schemas/users.schema';
 import { UserDocument } from './interfaces/users.interface';
@@ -35,5 +35,17 @@ export class UsersService {
   async findOneById(id : string): Promise<User | undefined> {
     console.log(id);
     return this.usersModel.findOne({ id }).exec();
+  }
+
+  // Add card to the deck
+  async addCardToDeck(userId : string, cardId: string): Promise<User | undefined> {
+    // Filter by user id
+    const filter = { id: userId };
+    // Push cardId into the deck
+    const update = {
+      $push: { cards: { $each: [cardId] } },
+    };
+
+    return this.usersModel.findOneAndUpdate(filter, update, { new: true });
   }
 }

@@ -12,22 +12,22 @@ export class Card {
   back: CardFace;
 
   @Prop(
-    raw([
+    raw(
       {
         frontTitle: { type: String },
         frontDescription: { type: String },
       },
-    ]),
+    ),
   )
   frontCardProps!: Record<string, any>;
 
   @Prop(
-    raw([
+    raw(
       {
         backTitle: { type: String },
         backDescription: { type: String },
       },
-    ]),
+    ),
   )
   backCardProps!: Record<string, any>;
 

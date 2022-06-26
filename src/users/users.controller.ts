@@ -5,6 +5,7 @@ import {
     Param,
     Res,
     Req,
+    Patch,
     UseGuards,
     Body,
     ForbiddenException,
@@ -19,7 +20,6 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(
       private readonly usersService: UsersService,
-      private readonly cardsService: CardsService,
     ) {}
 
     // Register a new user
@@ -41,9 +41,16 @@ export class UsersController {
         }
     }
 
+    // Check if a user exists, for registration of new user
+    @Get('/exists/:username')
+    async getUser(@Param('username') username: string) {
+        const result = await this.usersService.findOneByUsername(username);
+        return result !== null;
+    }
+
     // req.user returns username and id
     @UseGuards(JwtAuthGuard)
-    @Get('profile')
+    @Get('/profile')
     async getProfile(@Req() req) {
       try {
         const user = await this.usersService.findOneById(req.user.id);
@@ -60,10 +67,21 @@ export class UsersController {
       }
     }
 
-    @Get('/exists/:username')
-    async getUser(@Param('username') username: string) {
-        const result = await this.usersService.findOneByUsername(username);
-        return result !== null;
+    // Add a card id into a user's card list
+    @UseGuards(JwtAuthGuard)
+    @Patch('/deck/add')
+    async addCardToDeck(
+      @Req() req,
+      @Res() res,
+      @Body('id') id: string,
+    ) {
+      try {
+        const userId = req.user.id;
+        const deck = await this.usersService.addCardToDeck(userId, id);
+        res.status(200).send(deck);
+      } catch (error : any) {
+        res.status(400).send({ error: "Bad request", error_description: error.message });
+      }
     }
 }
   
