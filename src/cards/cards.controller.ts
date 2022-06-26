@@ -3,7 +3,7 @@ import {
     Get,
     Post,
     Res,
-    Req,
+    Patch,
     Query,
     UseGuards,
     Body,
@@ -50,8 +50,45 @@ export class CardsController {
         res.status(400).send({ error: "Bad request", error_description: "Missing front or back face" });
       }
 
-      // Create cardDocument in the CardModel
+      // Create template cardDocument
       const card = await this.cardsService.createCard(
+        frontFace,
+        backFace,
+        frontTitle,
+        frontDescription,
+        backTitle,
+        backDescription,
+      )
+
+      res.status(201).send(card);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
+
+  // Edit a single card
+  // Don't need to edit anywhere else, since card details are only stored in this collection
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  async updateCard(
+    @Res() res,
+    @Body('id') id: string,
+    @Body('front') frontFace: string,
+    @Body('back') backFace: string,
+    @Body('frontTitle') frontTitle: string,
+    @Body('frontDescription') frontDescription: string,
+    @Body('backTitle') backTitle: string,
+    @Body('backDescription') backDescription: string,
+  ) {
+    try {
+      // Check is faces are valid
+      if (!frontFace || !backFace) {
+        res.status(400).send({ error: "Bad request", error_description: "Missing front or back face" });
+      }
+
+      // Create template cardDocument
+      const card = await this.cardsService.updateCard(
+        id,
         frontFace,
         backFace,
         frontTitle,
@@ -83,6 +120,8 @@ export class CardsController {
       res.status(400).send({ error: "Bad request", error_description: e.message });
     }
   }
+
+  
 }
 
   
