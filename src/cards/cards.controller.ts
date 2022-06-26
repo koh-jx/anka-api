@@ -96,7 +96,6 @@ export class CardsController {
         backTitle,
         backDescription,
       )
-
       res.status(200).send(card);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });

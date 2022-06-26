@@ -4,6 +4,7 @@ import mongoose, { Model, AnyKeys } from 'mongoose';
 
 import { Card } from './schemas/cards.schema';
 import { CardDocument, CardFace } from './interfaces/cards.interface';
+import { constants } from 'http2';
 
 @Injectable()
 export class CardsService {
@@ -25,16 +26,18 @@ export class CardsService {
     backTitle         : string,
     backDescription   : string,
   ): Promise<CardDocument> {
+    const temp = await this.createCardDocument(
+      frontFace,
+      backFace,
+      frontTitle,
+      frontDescription,
+      backTitle,
+      backDescription
+    );
+    temp['id'] = id;
     return await this.cardsModel.findOneAndUpdate(
       { id }, 
-      this.createCardDocument(
-        frontFace,
-        backFace,
-        frontTitle,
-        frontDescription,
-        backTitle,
-        backDescription
-      ), 
+      temp, 
       { new: true });
   }
 
