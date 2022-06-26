@@ -9,6 +9,7 @@ import {
     Patch,
     UseGuards,
     Body,
+    Query,
     ForbiddenException,
 } from '@nestjs/common';
 
@@ -94,7 +95,7 @@ export class UsersController {
     async deleteCard(
       @Req() req,
       @Res() res,
-      @Body('id') id: string,
+      @Query('id') id: string,
     ) {
       try {
         const userId = req.user.id;

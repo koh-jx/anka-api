@@ -18,7 +18,7 @@ import { CardsService } from './cards.service';
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
-  // Get a single card
+  // Get a single card by its id
   @UseGuards(JwtAuthGuard)
   @Get()
   async getCard(@Res() res, @Query('id') id: string) {
@@ -66,7 +66,7 @@ export class CardsController {
     }
   }
 
-  // Edit a single card
+  // Edit a single card, finds the card via its id, then updates it
   // Don't need to edit anywhere else, since card details are only stored in this collection
   @UseGuards(JwtAuthGuard)
   @Patch()
@@ -102,15 +102,14 @@ export class CardsController {
     }
   }
 
-  // Edit a single card
-  // Don't need to edit anywhere else, since card details are only stored in this collection
+  // Delete a single card, finds it via its id
   // To delete from a user deck, will still have to call the DELETE 'users/deck' endpoint
   // will be updated to 'decks/id' in the future
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteCard(
     @Res() res,
-    @Body('id') id: string,
+    @Query('id') id: string,
   ) {
     try {
       // Create template cardDocument
