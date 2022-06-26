@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CardsService } from 'src/cards/cards.service';
 
 import { UsersService } from './users.service';
 
@@ -48,6 +47,7 @@ export class UsersController {
         return result !== null;
     }
 
+    // Get the profile of the user
     // req.user returns username and id
     @UseGuards(JwtAuthGuard)
     @Get('/profile')
@@ -67,7 +67,10 @@ export class UsersController {
       }
     }
 
-    // Add a card id into a user's card list
+
+    //// TO MOVE THESE OVER TO FUTURE DECK COLLECTION //////////////////////////////////////////////////////////////
+
+    // Add a card id into a user's deck
     @UseGuards(JwtAuthGuard)
     @Patch('/deck/add')
     async addCardToDeck(
