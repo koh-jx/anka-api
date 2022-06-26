@@ -1,12 +1,8 @@
 import {
     Controller,
-    Get,
     Post,
-    Param,
-    Res,
     Request,
     UseGuards,
-    Body,
 } from '@nestjs/common';
 
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
@@ -24,6 +20,7 @@ export class AuthController {
       return this.authService.login(req.user);
     }
 
+    // Logout function: Nothing to clean up in backend for now, only delete jwt in the frontend localStorage
     // @UseGuards(JwtAuthGuard)
     // @Post('/logout')
     // async logout(@Request() req) {

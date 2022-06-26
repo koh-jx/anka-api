@@ -5,9 +5,9 @@ export class User {
   // Prop for the user's id
   @Prop({ required: true, unique: true, index: true })
   id: string;
-  @Prop({ required: true, unique: true})
+  @Prop({ required: true, unique: true })
   username!: string;
-  @Prop()
+  @Prop({ required: true })
   password: string;
 }
 
