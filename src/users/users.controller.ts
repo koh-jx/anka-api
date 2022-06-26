@@ -41,28 +41,6 @@ export class UsersController {
         }
     }
 
-    @Get('cards')
-    @UseGuards(JwtAuthGuard)
-    async getCardsFromUser(@Req() req) {
-      try {
-        const user = await this.usersService.findOneById(req.user.id);
-        if (!user) {
-          throw new ForbiddenException();
-        }
-        const cards = user.cards;
-        const result = [];
-        for (const card of cards) {
-          const cardObj = await this.cardsService.getCardById(card);
-          if (cardObj) {
-            result.push(cardObj);
-          }
-        }
-        return result;
-      } catch (e : any) {
-        throw new ForbiddenException(e.message);
-      }
-    }
-
     // req.user returns username and id
     @UseGuards(JwtAuthGuard)
     @Get('profile')
