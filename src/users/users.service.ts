@@ -37,13 +37,27 @@ export class UsersService {
     return this.usersModel.findOne({ id }).exec();
   }
 
+
+  //// DECK RELATED FUNCTIONS /////////////////////////////////////////////////////////////////////
   // Add card to the deck
   async addCardToDeck(userId : string, cardId: string): Promise<User | undefined> {
     // Filter by user id
     const filter = { id: userId };
     // Push cardId into the deck
     const update = {
-      $push: { cards: { $each: [cardId] } },
+      $push: { cards: { $each: [cardId] } }
+    };
+
+    return this.usersModel.findOneAndUpdate(filter, update, { new: true });
+  }
+
+  // Remove card from the deck
+  async removeCardFromDeck(userId : string, cardId: string): Promise<User | undefined> {
+    // Filter by user id
+    const filter = { id: userId };
+    // Push cardId into the deck
+    const update = {
+      $pull: { cards: cardId }
     };
 
     return this.usersModel.findOneAndUpdate(filter, update, { new: true });

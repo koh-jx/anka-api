@@ -1,5 +1,6 @@
 import {
     Controller,
+    Delete,
     Get,
     Post,
     Res,
@@ -31,8 +32,8 @@ export class CardsController {
   }
   
   // Create a single card
-  // To add to a user deck, will still have to call the POST 'users/deck/add' endpoint
-  // will be updated to 'decks/cards/add' in the future
+  // To add to a user deck, will still have to call the PATCH 'users/deck' endpoint
+  // will be updated to 'decks/id' in the future
   @UseGuards(JwtAuthGuard)
   @Post()
   async createCard(
@@ -97,7 +98,26 @@ export class CardsController {
         backDescription,
       )
 
-      res.status(201).send(card);
+      res.status(200).send(card);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
+
+  // Edit a single card
+  // Don't need to edit anywhere else, since card details are only stored in this collection
+  // To delete from a user deck, will still have to call the DELETE 'users/deck' endpoint
+  // will be updated to 'decks/id' in the future
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async deleteCard(
+    @Res() res,
+    @Body('id') id: string,
+  ) {
+    try {
+      // Create template cardDocument
+      const card = await this.cardsService.deleteCard(id)
+      res.status(200).send(card);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
     }

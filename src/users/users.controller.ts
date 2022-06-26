@@ -1,5 +1,6 @@
 import {
     Controller,
+    Delete,
     Get,
     Post,
     Param,
@@ -70,9 +71,10 @@ export class UsersController {
 
     //// TO MOVE THESE OVER TO FUTURE DECK COLLECTION //////////////////////////////////////////////////////////////
 
-    // Add a card id into a user's deck
+    // Add a card id into the owner's deck
+    // Patch request to edit the users' array to append into it
     @UseGuards(JwtAuthGuard)
-    @Patch('/deck/add')
+    @Patch('/deck')
     async addCardToDeck(
       @Req() req,
       @Res() res,
@@ -81,6 +83,23 @@ export class UsersController {
       try {
         const userId = req.user.id;
         const deck = await this.usersService.addCardToDeck(userId, id);
+        res.status(200).send(deck);
+      } catch (error : any) {
+        res.status(400).send({ error: "Bad request", error_description: error.message });
+      }
+    }
+
+    // Delete a single card from the owner's deck
+    @UseGuards(JwtAuthGuard)
+    @Delete('/deck')
+    async deleteCard(
+      @Req() req,
+      @Res() res,
+      @Body('id') id: string,
+    ) {
+      try {
+        const userId = req.user.id;
+        const deck = await this.usersService.removeCardFromDeck(userId, id);
         res.status(200).send(deck);
       } catch (error : any) {
         res.status(400).send({ error: "Bad request", error_description: error.message });
