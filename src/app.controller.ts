@@ -1,6 +1,4 @@
-import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { Controller, Get } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { AppService } from './app.service';
 
@@ -14,13 +12,5 @@ export class AppController {
   @Get('/')
   sayHello() {
     return this.appService.getHello();
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    // Note: Can add more stuff in request via jwt-auth.guard.ts validate()
-    // Currently only have userId and username
-    return req.user;
   }
 }

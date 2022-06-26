@@ -17,7 +17,7 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('/login')
     async login(@Request() req) {
-      return this.authService.login(req.user);
+      return this.authService.login(req.user._doc);
     }
 
     // Logout function: Nothing to clean up in backend for now, only delete jwt in the frontend localStorage

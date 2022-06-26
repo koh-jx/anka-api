@@ -13,11 +13,11 @@ export class CardsService {
 
   // CRUD functions
   async getCardById(id: string): Promise<CardDocument> {
-    return await this.cardsModel.findById(id);
+    return await this.cardsModel.findById(id).exec();
   }
 
   async updateCard(id: string, card: CardDocument): Promise<CardDocument> {
-    return await this.cardsModel.findByIdAndUpdate(id, card, { new: true });
+    return await this.cardsModel.findByIdAndUpdate(id, card, { new: true }).exec();
   }
 
   async createCard(card: CardDocument): Promise<CardDocument> {
@@ -25,7 +25,7 @@ export class CardsService {
   }
 
   async deleteCard(id: string): Promise<CardDocument> {
-    return await this.cardsModel.findByIdAndDelete(id);
+    return await this.cardsModel.findByIdAndDelete(id).exec();
   }
 
 }

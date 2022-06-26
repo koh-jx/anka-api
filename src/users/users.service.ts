@@ -26,7 +26,13 @@ export class UsersService {
     return await newUser.save();
   }
 
-  async findOne(username: string): Promise<User | undefined> {
+  // Find a user with the username
+  async findOneByUsername(username: string): Promise<User | undefined> {
     return this.usersModel.findOne({ username }).exec();
+  }
+
+  // Find a user with the username
+  async findOneById(id : string): Promise<User | undefined> {
+    return this.usersModel.findById({ id }).exec();
   }
 }

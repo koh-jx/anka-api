@@ -4,17 +4,23 @@ import {
     Post,
     Param,
     Res,
+    Req,
     UseGuards,
     Body,
+    ForbiddenException,
 } from '@nestjs/common';
 
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CardsService } from 'src/cards/cards.service';
 
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+      private readonly usersService: UsersService,
+      private readonly cardsService: CardsService,
+    ) {}
 
     // Register a new user
     @Post('/register')
@@ -35,9 +41,50 @@ export class UsersController {
         }
     }
 
+    @Get('cards')
+    @UseGuards(JwtAuthGuard)
+    async getCardsFromUser(@Req() req) {
+      try {
+        const user = await this.usersService.findOneById(req.user.id);
+        if (!user) {
+          throw new ForbiddenException();
+        }
+        const cards = user.cards;
+        const result = [];
+        for (const card of cards) {
+          const cardObj = await this.cardsService.getCardById(card);
+          if (cardObj) {
+            result.push(cardObj);
+          }
+        }
+        return result;
+      } catch (e : any) {
+        throw new ForbiddenException(e.message);
+      }
+    }
+
+    // req.user returns username and id
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    async getProfile(@Req() req) {
+      try {
+        const user = await this.usersService.findOneById(req.user.id);
+        if (!user) {
+          throw new ForbiddenException();
+        }
+        user.password = undefined;
+        const userObj = JSON.parse(JSON.stringify(user));
+        return {
+          ...userObj,
+        };
+      } catch (e : any) {
+        throw new ForbiddenException(e.message);
+      }
+    }
+
     @Get('/exists/:username')
     async getUser(@Param('username') username: string) {
-        const result = await this.usersService.findOne(username);
+        const result = await this.usersService.findOneByUsername(username);
         return result !== null;
     }
 }
