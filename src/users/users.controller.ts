@@ -33,7 +33,6 @@ export class UsersController {
             await this.usersService.register(username, password);
             res.status(201).send();
         } catch (error: any) {
-            console.log(error)
             res.status(400).send({ 
                 error: "Could not register user",
                 error_description: error.message,

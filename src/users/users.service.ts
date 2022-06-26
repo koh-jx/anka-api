@@ -33,7 +33,6 @@ export class UsersService {
 
   // Find a user with the username
   async findOneById(id : string): Promise<User | undefined> {
-    console.log(id);
     return this.usersModel.findOne({ id }).exec();
   }
 

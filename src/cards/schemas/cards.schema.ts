@@ -19,7 +19,7 @@ export class Card {
       },
     ),
   )
-  frontCardProps!: Record<string, any>;
+  frontCardFaceProps!: Record<string, any>;
 
   @Prop(
     raw(
@@ -29,7 +29,7 @@ export class Card {
       },
     ),
   )
-  backCardProps!: Record<string, any>;
+  backCardFaceProps!: Record<string, any>;
 
 }
 

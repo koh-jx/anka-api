@@ -8,11 +8,11 @@ export interface CardDocument extends mongoose.Document {
     id: string;
     front: CardFace;
     back: CardFace;
-    frontCardProps: {
+    frontCardFaceProps: {
         frontTitle: string,
         frontDescription: string,
     };
-    backCardProps: {
+    backCardFaceProps: {
         backTitle: string;
         backDescription: string;
     };

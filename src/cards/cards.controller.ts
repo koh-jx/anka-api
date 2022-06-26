@@ -18,13 +18,12 @@ import { CardsService } from './cards.service';
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
-  // Get 1 card
+  // Get a single card
   @UseGuards(JwtAuthGuard)
   @Get()
   async getCard(@Res() res, @Query('id') id: string) {
     try {
       const result = await this.cardsService.getCardById(id);
-      console.log(id, result);
       res.status(200).send(result);
     } catch (error: any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
@@ -121,27 +120,7 @@ export class CardsController {
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
     }
-  }
-
-  // Parse array of card ids into an array of card objects and returns it
-  @Get('/cards')
-  @UseGuards(JwtAuthGuard)
-  async getCardsFromArray(@Body() cards: string[], @Res() res) {
-    try {
-      const result = [];
-      for (const card of cards) {
-        const cardObj = await this.cardsService.getCardById(card);
-        if (cardObj) {
-          result.push(cardObj);
-        }
-      }
-      res.status(200).send(result);
-    } catch (e : any) {
-      res.status(400).send({ error: "Bad request", error_description: e.message });
-    }
-  }
-
-  
+  }  
 }
 
   

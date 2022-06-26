@@ -51,7 +51,7 @@ export class CardsService {
     backDescription   : string,
   ): Promise<CardDocument> {
     return await this.cardsModel.create(
-      this.createCardDocument(
+      await this.createCardDocument(
         frontFace,
         backFace,
         frontTitle,
@@ -79,11 +79,11 @@ export class CardsService {
       id,
       front,
       back,
-      frontCardProps: {
+      frontCardFaceProps: {
         frontTitle,
         frontDescription,
       },
-      backCardProps: {
+      backCardFaceProps: {
         backTitle,
         backDescription,
       },
