@@ -16,4 +16,5 @@ export interface CardDocument extends mongoose.Document {
         backTitle: string;
         backDescription: string;
     };
+    decks: string[];
 }

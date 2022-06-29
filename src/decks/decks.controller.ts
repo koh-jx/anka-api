@@ -34,15 +34,15 @@ export class DecksController {
   // To add to a user deck, will still have to call the PATCH 'users/deck' endpoint
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createCard(
+  async createDeck(
     @Res() res,
     @Body('name') name: string,
   ) {
     try {
       // Frontend already confirms that name is valid
       // Create template cardDocument
-      const card = await this.decksService.createDeck(name);
-      res.status(201).send(card);
+      const deck = await this.decksService.createDeck(name);
+      res.status(201).send(deck);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
     }
@@ -84,23 +84,23 @@ export class DecksController {
   //   }
   // }
 
-  // // Delete a single card, finds it via its id
-  // // To delete from a user deck, will still have to call the DELETE 'users/deck' endpoint
-  // // will be updated to 'decks/id' in the future
-  // @UseGuards(JwtAuthGuard)
-  // @Delete()
-  // async deleteCard(
-  //   @Res() res,
-  //   @Query('id') id: string,
-  // ) {
-  //   try {
-  //     // Create template cardDocument
-  //     const card = await this.cardsService.deleteCard(id)
-  //     res.status(200).send(card);
-  //   } catch (error : any) {
-  //     res.status(400).send({ error: "Bad request", error_description: error.message });
-  //   }
-  // }  
+  // Delete a deck card, finds it via its id
+  // Will still have to call the DELETE 'users/deck' endpoint to remove from the user's deck array
+  // Deletes cards within the deck if there is no other reference to them
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async deleteDeck(
+    @Res() res,
+    @Query('id') id: string,
+  ) {
+    try {
+      // Create template cardDocument
+      const deck = await this.decksService.deleteDeck(id)
+      res.status(200).send(deck);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }  
 }
 
   

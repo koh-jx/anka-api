@@ -43,13 +43,24 @@ export class CardsService {
       { new: true });
   }
 
+  // Deletes a card from the database
+  // If there are references to any decks, remove the card from the deck by calling removeCardFromDeck
   async deleteCard(id: string): Promise<CardDocument> {
     // Remove card from all decks in the decks array
-    // const card = await this.getCardById(id);
-    // const card.decks.forEach(deckId => {
-    //   this.decksService.removeCardFromDeck(deckId, id);
-    // }
-    return await this.cardsModel.findOneAndDelete({ id }).exec();
+    const card = await this.cardsModel.findOneAndDelete({ id }).exec()
+    card.decks.forEach(deckId => {
+      this.decksService.removeCardFromDeck(id, deckId);
+    });
+    return card;
+  }
+
+  // Delete a deck from the card's array
+  // Only called when the card is affected from a deck deletion ( ie deck.service deleteDeck() )
+  // The card will not be deleted even if there are no decks left
+  async removeDeckFromCard(cardId: string, deckId: string) {
+    const card = await this.cardsModel.findOne({ id: cardId }).exec();
+    card.decks = card.decks.filter(deck => deck !== deckId);
+    await card.save();  
   }
 
   async createCard(

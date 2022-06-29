@@ -42,9 +42,24 @@ export class DecksService {
   //     { new: true });
   // }
 
-  // async deleteCard(id: string): Promise<CardDocument> {
-  //   return await this.cardsModel.findOneAndDelete({ id }).exec();
-  // }
+  // Deletes a deck from the database
+  // If there are references to any cards, remove the deck from the cards' decks array by calling removeDeckFromCard
+  async deleteDeck(id: string): Promise<DeckDocument> {
+    const deckDeleted =  await this.decksModel.findOneAndDelete({ id }).exec();
+    for (const card of deckDeleted.cards) {
+      await this.cardsService.removeDeckFromCard(card.id, deckDeleted.id);
+    }
+    return deckDeleted;
+  }
+
+  // Delete a card from the deck's array
+  // Called from card.service deleteCard
+  // The deck will NOT be deleted even if there are no cards in it
+  async removeCardFromDeck(cardId: string, deckId: string) {
+    const deck = await this.decksModel.findOne({ id: deckId }).exec();
+    deck.cards = deck.cards.filter(card => card.id !== cardId);
+    await deck.save();
+  }
 
   async createDeck(name: string): Promise<DeckDocument> {
     return await this.decksModel.create(
