@@ -10,6 +10,8 @@ export class User {
   password: string;
   @Prop()
   cards: string[] = [];   // Array of ids each referencing Cards
+  @Prop()
+  decks: string[] = [];   // Array of ids each referencing Decks
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

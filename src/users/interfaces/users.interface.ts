@@ -5,4 +5,5 @@ export interface UserDocument extends mongoose.Document {
     username: string;
     password: string;
     cards: string[]
+    decks: string[]
 }

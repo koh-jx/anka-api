@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, AnyKeys } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 import { Card } from './schemas/cards.schema';
 import { CardDocument, CardFace } from './interfaces/cards.interface';
-import { constants } from 'http2';
 
 @Injectable()
 export class CardsService {
