@@ -4,6 +4,7 @@ import {
     Get,
     Post,
     Res,
+    Req,
     Patch,
     Query,
     UseGuards,
@@ -35,6 +36,7 @@ export class CardsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async createCard(
+    @Req() req,
     @Res() res,
     @Body('front') frontFace: string,
     @Body('back') backFace: string,
@@ -57,6 +59,7 @@ export class CardsController {
         frontDescription,
         backTitle,
         backDescription,
+        req.user.id
       )
 
       res.status(201).send(card);
@@ -106,12 +109,13 @@ export class CardsController {
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteCard(
+    @Req() req,
     @Res() res,
     @Query('id') id: string,
   ) {
     try {
       // Create template cardDocument
-      const card = await this.cardsService.deleteCard(id)
+      const card = await this.cardsService.deleteCard(id, req.user.id)
       res.status(200).send(card);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });

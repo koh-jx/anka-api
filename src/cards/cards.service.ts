@@ -5,12 +5,14 @@ import mongoose, { Model } from 'mongoose';
 import { Card } from './schemas/cards.schema';
 import { CardDocument, CardFace } from './interfaces/cards.interface';
 import { DecksService } from 'src/decks/decks.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class CardsService {
   constructor(
     @Inject(forwardRef(() => DecksService)) private readonly decksService: DecksService,
     @InjectModel(Card.name) private readonly cardsModel: Model<CardDocument>,
+    private readonly usersService: UsersService,
   ) {}
 
   // CRUD functions
@@ -45,12 +47,13 @@ export class CardsService {
 
   // Deletes a card from the database
   // If there are references to any decks, remove the card from the deck by calling removeCardFromDeck
-  async deleteCard(id: string): Promise<CardDocument> {
+  async deleteCard(id: string, userId: string): Promise<CardDocument> {
     // Remove card from all decks in the decks array
     const card = await this.cardsModel.findOneAndDelete({ id }).exec()
     card.decks.forEach(deckId => {
       this.decksService.removeCardFromDeck(id, deckId);
     });
+    this.usersService.removeCard(userId, id);
     return card;
   }
 
@@ -78,8 +81,9 @@ export class CardsService {
     frontDescription  : string,
     backTitle         : string,
     backDescription   : string,
+    userId            : string,
   ): Promise<CardDocument> {
-    return await this.cardsModel.create(
+    const result = await this.cardsModel.create(
       await this.createCardDocument(
         frontFace,
         backFace,
@@ -89,6 +93,8 @@ export class CardsService {
         backDescription
       )
     );
+    this.usersService.addCard(userId, result.id);
+    return result;
   }
 
   // Facilitate Creation and Update of Card for the card model

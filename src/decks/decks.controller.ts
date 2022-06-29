@@ -4,6 +4,7 @@ import {
     Get,
     Post,
     Res,
+    Req,
     Patch,
     Query,
     UseGuards,
@@ -35,13 +36,14 @@ export class DecksController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async createDeck(
+    @Req() req,
     @Res() res,
     @Body('name') name: string,
   ) {
     try {
       // Frontend already confirms that name is valid
       // Create template cardDocument
-      const deck = await this.decksService.createDeck(name);
+      const deck = await this.decksService.createDeck(name, req.user.id);
       res.status(201).send(deck);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
@@ -67,7 +69,7 @@ export class DecksController {
 
   // Add a card to a deck
   @UseGuards(JwtAuthGuard)
-  @Patch()
+  @Patch('/card')
   async addCardToDeck(
     @Res() res,
     @Body('id') id: string,
@@ -88,12 +90,12 @@ export class DecksController {
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteDeck(
+    @Req() req,
     @Res() res,
     @Query('id') id: string,
   ) {
     try {
-      // Create template cardDocument
-      const deck = await this.decksService.deleteDeck(id)
+      const deck = await this.decksService.deleteDeck(id, req.user.id)
       res.status(200).send(deck);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });

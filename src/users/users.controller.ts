@@ -68,42 +68,41 @@ export class UsersController {
       }
     }
 
+    //// For future use, where user can possibly opt to add other users' cards to their own collection
 
-    //// TO MOVE THESE OVER TO FUTURE DECK COLLECTION //////////////////////////////////////////////////////////////
+    // // Add a card id into the owner's deck
+    // // Patch request to edit the users' array to append into it
+    // @UseGuards(JwtAuthGuard)
+    // @Patch('/card')
+    // async addCard(
+    //   @Req() req,
+    //   @Res() res,
+    //   @Body('id') id: string,
+    // ) {
+    //   try {
+    //     const userId = req.user.id;
+    //     const deck = await this.usersService.addCard(userId, id);
+    //     res.status(200).send(deck);
+    //   } catch (error : any) {
+    //     res.status(400).send({ error: "Bad request", error_description: error.message });
+    //   }
+    // }
 
-    // Add a card id into the owner's deck
-    // Patch request to edit the users' array to append into it
-    @UseGuards(JwtAuthGuard)
-    @Patch('/card')
-    async addCard(
-      @Req() req,
-      @Res() res,
-      @Body('id') id: string,
-    ) {
-      try {
-        const userId = req.user.id;
-        const deck = await this.usersService.addCard(userId, id);
-        res.status(200).send(deck);
-      } catch (error : any) {
-        res.status(400).send({ error: "Bad request", error_description: error.message });
-      }
-    }
-
-    // Delete a single card from the owner's deck
-    @UseGuards(JwtAuthGuard)
-    @Delete('/card')
-    async deleteCard(
-      @Req() req,
-      @Res() res,
-      @Query('id') id: string,
-    ) {
-      try {
-        const userId = req.user.id;
-        const deck = await this.usersService.removeCard(userId, id);
-        res.status(200).send(deck);
-      } catch (error : any) {
-        res.status(400).send({ error: "Bad request", error_description: error.message });
-      }
-    }
+    // // Delete a single card from the owner's deck
+    // @UseGuards(JwtAuthGuard)
+    // @Delete('/card')
+    // async deleteCard(
+    //   @Req() req,
+    //   @Res() res,
+    //   @Query('id') id: string,
+    // ) {
+    //   try {
+    //     const userId = req.user.id;
+    //     const deck = await this.usersService.removeCard(userId, id);
+    //     res.status(200).send(deck);
+    //   } catch (error : any) {
+    //     res.status(400).send({ error: "Bad request", error_description: error.message });
+    //   }
+    // }
 }
   

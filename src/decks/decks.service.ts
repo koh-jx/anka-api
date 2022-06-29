@@ -6,12 +6,14 @@ import { Deck } from './schemas/decks.schema';
 import { DeckDocument } from './interfaces/decks.interface';
 import { CardsService } from 'src/cards/cards.service';
 import { CardDocument } from 'src/cards/interfaces/cards.interface';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class DecksService {
   constructor(
     @Inject(forwardRef(() => CardsService)) private readonly cardsService: CardsService,
-    @InjectModel(Deck.name) private readonly decksModel: Model<DeckDocument>
+    @InjectModel(Deck.name) private readonly decksModel: Model<DeckDocument>,
+    private readonly usersService: UsersService,
   ) {}
 
   // CRUD functions
@@ -31,11 +33,12 @@ export class DecksService {
 
   // Deletes a deck from the database
   // If there are references to any cards, remove the deck from the cards' decks array by calling removeDeckFromCard
-  async deleteDeck(id: string): Promise<DeckDocument> {
+  async deleteDeck(id: string, userId: string): Promise<DeckDocument> {
     const deckDeleted =  await this.decksModel.findOneAndDelete({ id }).exec();
     for (const card of deckDeleted.cards) {
-      await this.cardsService.removeDeckFromCard(card, deckDeleted.id);
+      await this.cardsService.removeDeckFromCard(card, id);
     }
+    this.usersService.removeDeck(userId, id);
     return deckDeleted;
   }
 
@@ -55,10 +58,12 @@ export class DecksService {
     await deck.save();
   }
 
-  async createDeck(name: string): Promise<DeckDocument> {
-    return await this.decksModel.create(
+  async createDeck(name: string, userId: string): Promise<DeckDocument> {
+    const result = await this.decksModel.create(
       await this.createDeckDocument(name)
     );
+    this.usersService.addDeck(userId, result.id);
+    return result;
   }
 
   // Facilitate Creation and Update of Card for the card model
