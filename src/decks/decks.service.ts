@@ -5,6 +5,7 @@ import mongoose, { Model } from 'mongoose';
 import { Deck } from './schemas/decks.schema';
 import { DeckDocument } from './interfaces/decks.interface';
 import { CardsService } from 'src/cards/cards.service';
+import { CardDocument } from 'src/cards/interfaces/cards.interface';
 
 @Injectable()
 export class DecksService {
@@ -67,6 +68,12 @@ export class DecksService {
       id,
       name,
     };
+  }
+
+  // Get all the card documents of the deck from the card db
+  async getCardsFromDeck(deckId: string): Promise<CardDocument[]> {
+    const deck = await this.decksModel.findOne({ id: deckId }).exec();
+    return Promise.all(deck.cards.map(id => this.cardsService.getCardById(id)));
   }
 
 }

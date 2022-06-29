@@ -99,6 +99,17 @@ export class DecksController {
       res.status(400).send({ error: "Bad request", error_description: error.message });
     }
   }  
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/cards')
+  async getCardsFromDeck(@Res() res, @Query('id') id: string) {
+    try {
+      const result = await this.decksService.getCardsFromDeck(id);
+      res.status(200).send(result);
+    } catch (error: any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
 }
 
   
