@@ -13,10 +13,10 @@ export class DecksService {
     @InjectModel(Deck.name) private readonly decksModel: Model<DeckDocument>
   ) {}
 
-  // // CRUD functions
-  // async getCardById(id: string): Promise<CardDocument> {
-  //   return await this.cardsModel.findOne({ id }).exec();
-  // }
+  // CRUD functions
+  async getDeckById(id: string): Promise<DeckDocument> {
+    return await this.decksModel.findOne({ id }).exec();
+  }
 
   // async updateCard(
   //   id: string, 
@@ -46,52 +46,19 @@ export class DecksService {
   //   return await this.cardsModel.findOneAndDelete({ id }).exec();
   // }
 
-  // async createCard(
-  //   frontFace         : string,
-  //   backFace          : string,
-  //   frontTitle        : string,
-  //   frontDescription  : string,
-  //   backTitle         : string,
-  //   backDescription   : string,
-  // ): Promise<CardDocument> {
-  //   return await this.cardsModel.create(
-  //     await this.createCardDocument(
-  //       frontFace,
-  //       backFace,
-  //       frontTitle,
-  //       frontDescription,
-  //       backTitle,
-  //       backDescription
-  //     )
-  //   );
-  // }
+  async createDeck(name: string): Promise<DeckDocument> {
+    return await this.decksModel.create(
+      await this.createDeckDocument(name)
+    );
+  }
 
-  // // Facilitate Creation and Update of Card for the card model
-  // async createCardDocument(
-  //   frontFace         : string,
-  //   backFace          : string,
-  //   frontTitle        : string,
-  //   frontDescription  : string,
-  //   backTitle         : string,
-  //   backDescription   : string,
-  // ) {
-  //   const id = new mongoose.Types.ObjectId().toHexString();
-  //   // Convert strings to CardFace enum types
-  //   const front = frontFace as CardFace;
-  //   const back = backFace as CardFace;
-  //   return {
-  //     id,
-  //     front,
-  //     back,
-  //     frontCardFaceProps: {
-  //       frontTitle,
-  //       frontDescription,
-  //     },
-  //     backCardFaceProps: {
-  //       backTitle,
-  //       backDescription,
-  //     },
-  //   };
-  // }
+  // Facilitate Creation and Update of Card for the card model
+  async createDeckDocument(name: string) {
+    const id = new mongoose.Types.ObjectId().toHexString();
+    return {
+      id,
+      name,
+    };
+  }
 
 }

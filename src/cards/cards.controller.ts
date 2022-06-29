@@ -32,7 +32,6 @@ export class CardsController {
   
   // Create a single card
   // To add to a user deck, will still have to call the PATCH 'users/deck' endpoint
-  // will be updated to 'decks/id' in the future
   @UseGuards(JwtAuthGuard)
   @Post()
   async createCard(
@@ -104,7 +103,6 @@ export class CardsController {
 
   // Delete a single card, finds it via its id
   // To delete from a user deck, will still have to call the DELETE 'users/deck' endpoint
-  // will be updated to 'decks/id' in the future
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteCard(

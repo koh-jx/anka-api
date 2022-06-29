@@ -37,12 +37,12 @@ export class UsersService {
   }
 
 
-  //// DECK RELATED FUNCTIONS /////////////////////////////////////////////////////////////////////
-  // Add card to the deck
-  async addCardToDeck(userId : string, cardId: string): Promise<User | undefined> {
+  //// CARD ARRAY RELATED FUNCTIONS /////////////////////////////////////////////////////////////////////
+  // Add card to the main array
+  async addCard(userId : string, cardId: string): Promise<User | undefined> {
     // Filter by user id
     const filter = { id: userId };
-    // Push cardId into the deck
+    // Push cardId
     const update = {
       $push: { cards: { $each: [cardId] } }
     };
@@ -50,13 +50,38 @@ export class UsersService {
     return this.usersModel.findOneAndUpdate(filter, update, { new: true });
   }
 
-  // Remove card from the deck
-  async removeCardFromDeck(userId : string, cardId: string): Promise<User | undefined> {
+  // Remove card from the main array
+  async removeCard(userId : string, cardId: string): Promise<User | undefined> {
     // Filter by user id
     const filter = { id: userId };
-    // Push cardId into the deck
+    // Pull cardId
     const update = {
       $pull: { cards: cardId }
+    };
+
+    return this.usersModel.findOneAndUpdate(filter, update, { new: true });
+  }
+
+  //// DECK ARRAY RELATED FUNCTIONS /////////////////////////////////////////////////////////////////////
+  // Add deck to the main array
+  async addDeck(userId : string, deckId: string): Promise<User | undefined> {
+    // Filter by user id
+    const filter = { id: userId };
+    // Push deckId
+    const update = {
+      $push: { decks: { $each: [deckId] } }
+    };
+
+    return this.usersModel.findOneAndUpdate(filter, update, { new: true });
+  }
+
+  // Remove deck from the main array
+  async removeDeck(userId : string, deckId: string): Promise<User | undefined> {
+    // Filter by user id
+    const filter = { id: userId };
+    // Pull deckId
+    const update = {
+      $pull: { decks: deckId }
     };
 
     return this.usersModel.findOneAndUpdate(filter, update, { new: true });
