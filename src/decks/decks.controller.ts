@@ -69,16 +69,31 @@ export class DecksController {
 
   // Add a card to a deck
   @UseGuards(JwtAuthGuard)
-  @Patch('/card')
+  @Patch('/add-card')
   async addCardToDeck(
     @Res() res,
     @Body('id') id: string,
     @Body('cardId') cardId: string,
   ) {
     try {
-      // Create template cardDocument
       const card = await this.decksService.addCardToDeck(cardId, id)
       res.status(200).send(card);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
+
+  // Remove a card from the deck
+  @UseGuards(JwtAuthGuard)
+  @Patch('/remove-card')
+  async removeCardFromDeck(
+    @Res() res,
+    @Body('id') id: string,
+    @Body('cardId') cardId: string,
+  ) {
+    try {
+      const deck = await this.decksService.removeCardFromDeckController(cardId, id)
+      res.status(200).send(deck);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
     }

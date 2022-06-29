@@ -59,6 +59,7 @@ export class CardsService {
 
   // Delete a deck from the card's array
   // Only called when the card is affected from a deck deletion ( ie deck.service deleteDeck() )
+  // or when said card is no longer affliated with the deck (ie deck.service removeCardFromDeckController() )
   // The card will not be deleted even if there are no decks left
   async removeDeckFromCard(cardId: string, deckId: string) {
     const card = await this.cardsModel.findOne({ id: cardId }).exec();

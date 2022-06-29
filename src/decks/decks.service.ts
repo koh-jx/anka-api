@@ -51,11 +51,24 @@ export class DecksService {
     await deck.save();
   }
 
+  // The same as the above functiono, but returns a promise of an array of card documents
+  // Comes from controller rather than service
+  // Also removes the deck from the card's decks array
+  async removeCardFromDeckController(cardId: string, deckId: string) {
+    const deck = await this.decksModel.findOne({ id: deckId }).exec();
+    deck.cards = deck.cards.filter(id => id !== cardId);
+    await deck.save();
+    this.cardsService.removeDeckFromCard(cardId, deckId);
+    return deck;
+  }
+
   // Add a card to the deck's array
   async addCardToDeck(cardId: string, deckId: string) {
     const deck = await this.decksModel.findOne({ id: deckId }).exec();
     deck.cards.push(cardId);
+    this.cardsService.addDeckToCard(cardId, deckId);
     await deck.save();
+    return deck;
   }
 
   async createDeck(name: string, userId: string): Promise<DeckDocument> {
