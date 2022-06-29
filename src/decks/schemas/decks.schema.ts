@@ -8,7 +8,7 @@ export class Deck {
   @Prop({ required: true})
   name: string;
   @Prop({required: true})
-  cards: Card[]
+  cards: string[]
 
 }
 

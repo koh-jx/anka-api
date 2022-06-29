@@ -4,5 +4,5 @@ import { CardDocument } from 'src/cards/interfaces/cards.interface';
 export interface DeckDocument extends mongoose.Document {
     id: string;
     name: string;
-    cards: CardDocument[];
+    cards: string[];
 }

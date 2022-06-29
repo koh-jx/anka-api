@@ -63,6 +63,14 @@ export class CardsService {
     await card.save();  
   }
 
+  // Add deck to card's decks array
+  // Only called when the card is being added to a deck (ie deck.service addCardToDeck() )
+  async addDeckToCard(cardId: string, deckId: string) {
+    const card = await this.cardsModel.findOne({ id: cardId }).exec();
+    card.decks.push(deckId);
+    await card.save();
+  }
+
   async createCard(
     frontFace         : string,
     backFace          : string,

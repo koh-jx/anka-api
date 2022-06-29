@@ -18,36 +18,22 @@ export class DecksService {
     return await this.decksModel.findOne({ id }).exec();
   }
 
-  // async updateCard(
-  //   id: string, 
-  //   frontFace         : string,
-  //   backFace          : string,
-  //   frontTitle        : string,
-  //   frontDescription  : string,
-  //   backTitle         : string,
-  //   backDescription   : string,
-  // ): Promise<CardDocument> {
-  //   const temp = await this.createCardDocument(
-  //     frontFace,
-  //     backFace,
-  //     frontTitle,
-  //     frontDescription,
-  //     backTitle,
-  //     backDescription
-  //   );
-  //   temp['id'] = id;
-  //   return await this.cardsModel.findOneAndUpdate(
-  //     { id }, 
-  //     temp, 
-  //     { new: true });
-  // }
+  async updateDeck(id : string, name : string): Promise<DeckDocument> {
+    // TODO TBC if this preserves the cards array or not
+    const temp = await this.createDeckDocument(name);
+    temp['id'] = id;
+    return await this.decksModel.findOneAndUpdate(
+      { id }, 
+      temp, 
+      { new: true });
+  }
 
   // Deletes a deck from the database
   // If there are references to any cards, remove the deck from the cards' decks array by calling removeDeckFromCard
   async deleteDeck(id: string): Promise<DeckDocument> {
     const deckDeleted =  await this.decksModel.findOneAndDelete({ id }).exec();
     for (const card of deckDeleted.cards) {
-      await this.cardsService.removeDeckFromCard(card.id, deckDeleted.id);
+      await this.cardsService.removeDeckFromCard(card, deckDeleted.id);
     }
     return deckDeleted;
   }
@@ -57,7 +43,14 @@ export class DecksService {
   // The deck will NOT be deleted even if there are no cards in it
   async removeCardFromDeck(cardId: string, deckId: string) {
     const deck = await this.decksModel.findOne({ id: deckId }).exec();
-    deck.cards = deck.cards.filter(card => card.id !== cardId);
+    deck.cards = deck.cards.filter(id => id !== cardId);
+    await deck.save();
+  }
+
+  // Add a card to the deck's array
+  async addCardToDeck(cardId: string, deckId: string) {
+    const deck = await this.decksModel.findOne({ id: deckId }).exec();
+    deck.cards.push(cardId);
     await deck.save();
   }
 

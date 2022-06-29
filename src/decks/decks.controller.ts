@@ -48,41 +48,39 @@ export class DecksController {
     }
   }
 
-  // // Edit a single card, finds the card via its id, then updates it
-  // // Don't need to edit anywhere else, since card details are only stored in this collection
-  // @UseGuards(JwtAuthGuard)
-  // @Patch()
-  // async updateCard(
-  //   @Res() res,
-  //   @Body('id') id: string,
-  //   @Body('front') frontFace: string,
-  //   @Body('back') backFace: string,
-  //   @Body('frontTitle') frontTitle: string,
-  //   @Body('frontDescription') frontDescription: string,
-  //   @Body('backTitle') backTitle: string,
-  //   @Body('backDescription') backDescription: string,
-  // ) {
-  //   try {
-  //     // Check is faces are valid
-  //     if (!frontFace || !backFace) {
-  //       res.status(400).send({ error: "Bad request", error_description: "Missing front or back face" });
-  //     }
+  // Edit a deck name, finds the card via its id, then updates it
+  // Don't need to edit anywhere else, since card details are only stored in this collection
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  async updateDeck(
+    @Res() res,
+    @Body('id') id: string,
+    @Body('name') name: string,
+  ) {
+    try {
+      const deck = await this.decksService.updateDeck(id, name);
+      res.status(200).send(deck);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
 
-  //     // Create template cardDocument
-  //     const card = await this.cardsService.updateCard(
-  //       id,
-  //       frontFace,
-  //       backFace,
-  //       frontTitle,
-  //       frontDescription,
-  //       backTitle,
-  //       backDescription,
-  //     )
-  //     res.status(200).send(card);
-  //   } catch (error : any) {
-  //     res.status(400).send({ error: "Bad request", error_description: error.message });
-  //   }
-  // }
+  // Add a card to a deck
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  async addCardToDeck(
+    @Res() res,
+    @Body('id') id: string,
+    @Body('cardId') cardId: string,
+  ) {
+    try {
+      // Create template cardDocument
+      const card = await this.decksService.addCardToDeck(cardId, id)
+      res.status(200).send(card);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
 
   // Delete a deck card, finds it via its id
   // Will still have to call the DELETE 'users/deck' endpoint to remove from the user's deck array
