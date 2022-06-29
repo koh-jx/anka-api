@@ -10,6 +10,8 @@ export class Card {
   front: CardFace;
   @Prop({ required: true})
   back: CardFace;
+  @Prop()
+  decks: string[] = [];   // Array of ids each referencing Decks
 
   @Prop(
     raw(

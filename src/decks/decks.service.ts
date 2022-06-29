@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 
 import { Deck } from './schemas/decks.schema';
 import { DeckDocument } from './interfaces/decks.interface';
+import { CardsService } from 'src/cards/cards.service';
 
 @Injectable()
 export class DecksService {
   constructor(
+    @Inject(forwardRef(() => CardsService)) private readonly cardsService: CardsService,
     @InjectModel(Deck.name) private readonly decksModel: Model<DeckDocument>
   ) {}
 
