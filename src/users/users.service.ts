@@ -92,7 +92,7 @@ export class UsersService {
   async getDecksFromUser(userId: string, page: number) : Promise<DeckDocument[]> {
     const user = await this.usersModel.findOne({ id: userId }).exec();
     // There are maximum 12 decks in a page
-    const decks = user.decks.slice(page * 12, page * 12 + 12);
+    const decks = user.decks.slice((page - 12) * 12, page * 12);
     return Promise.all(decks.map(deckId => this.decksService.getDeckById(deckId)));
   }
 }
