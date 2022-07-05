@@ -68,6 +68,18 @@ export class UsersController {
       }
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('/decks')
+    async getDecksFromUser(@Req() req, @Res() res, @Query('page') page: string) {
+      try {
+        const pageNum = parseInt(page);
+        const result = await this.usersService.getDecksFromUser(req.user.id, pageNum);
+        res.status(200).send(result);
+      } catch (error: any) {
+        res.status(400).send({ error: "Bad request", error_description: error.message });
+      }
+    }
+    
     //// For future use, where user can possibly opt to add other users' cards to their own collection
 
     // // Add a card id into the owner's deck

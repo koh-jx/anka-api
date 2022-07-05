@@ -19,7 +19,7 @@ import { DecksService } from './decks.service';
 export class DecksController {
   constructor(private readonly decksService: DecksService) {}
 
-  // Get a single card by its id
+  // Get a deck by its id
   @UseGuards(JwtAuthGuard)
   @Get()
   async getDeck(@Res() res, @Query('id') id: string) {
@@ -117,11 +117,14 @@ export class DecksController {
     }
   }  
 
+  // Get the cards in a deck as CardDocument[]
+  // Returns a max of 12 cards (in a page)
   @UseGuards(JwtAuthGuard)
   @Get('/cards')
-  async getCardsFromDeck(@Res() res, @Query('id') id: string) {
+  async getCardsFromDeck(@Res() res, @Query('id') id: string, @Query('page') page: string) {
     try {
-      const result = await this.decksService.getCardsFromDeck(id);
+      const pageNum = parseInt(page);
+      const result = await this.decksService.getCardsFromDeck(id, pageNum);
       res.status(200).send(result);
     } catch (error: any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });

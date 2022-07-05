@@ -1,18 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 import { User } from './schemas/users.schema';
 import { UserDocument } from './interfaces/users.interface';
-
-import * as bcrypt from 'bcrypt';
+import { DeckDocument } from 'src/decks/interfaces/decks.interface';
+import { DecksService } from 'src/decks/decks.service';
 
 // This should be a real class/interface representing a user entity
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private readonly usersModel: Model<UserDocument>
+    @InjectModel(User.name) private readonly usersModel: Model<UserDocument>,
+    @Inject(forwardRef(() => DecksService)) private readonly decksService: DecksService,
   ) {}
 
   async register(username: string, password: string): Promise<User> {
@@ -85,5 +87,12 @@ export class UsersService {
     };
 
     return this.usersModel.findOneAndUpdate(filter, update, { new: true });
+  }
+
+  async getDecksFromUser(userId: string, page: number) : Promise<DeckDocument[]> {
+    const user = await this.usersModel.findOne({ id: userId }).exec();
+    // There are maximum 12 decks in a page
+    const decks = user.decks.slice(page * 12, page * 12 + 12);
+    return Promise.all(decks.map(deckId => this.decksService.getDeckById(deckId)));
   }
 }
