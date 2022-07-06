@@ -7,6 +7,7 @@ import { DeckDocument } from './interfaces/decks.interface';
 import { CardsService } from 'src/cards/cards.service';
 import { CardDocument } from 'src/cards/interfaces/cards.interface';
 import { UsersService } from 'src/users/users.service';
+import { NUM_CARDS_PER_PAGE } from 'src/constants';
 
 @Injectable()
 export class DecksService {
@@ -91,8 +92,7 @@ export class DecksService {
   // Get all the card documents of the deck from the card db
   async getCardsFromDeck(deckId: string, page: number): Promise<CardDocument[]> {
     const deck = await this.decksModel.findOne({ id: deckId }).exec();
-    // Each page has a maximum of 12 cards. The last page may or may not have 12 cards.
-    const cards = deck.cards.slice((page - 1) * 12, page * 12);
+    const cards = deck.cards.slice((page - 1) * NUM_CARDS_PER_PAGE, page * NUM_CARDS_PER_PAGE);
     return Promise.all(cards.map(id => this.cardsService.getCardById(id)));
   }
 

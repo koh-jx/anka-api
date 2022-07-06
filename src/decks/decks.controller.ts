@@ -117,8 +117,7 @@ export class DecksController {
     }
   }  
 
-  // Get the cards in a deck as CardDocument[]
-  // Returns a max of 12 cards (in a page)
+  // Get the cards in a deck as CardDocument[] (in a page)
   @UseGuards(JwtAuthGuard)
   @Get('/cards')
   async getCardsFromDeck(@Res() res, @Query('id') id: string, @Query('page') page: string) {

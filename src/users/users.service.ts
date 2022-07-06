@@ -7,6 +7,7 @@ import { User } from './schemas/users.schema';
 import { UserDocument } from './interfaces/users.interface';
 import { DeckDocument } from 'src/decks/interfaces/decks.interface';
 import { DecksService } from 'src/decks/decks.service';
+import { NUM_DECKS_PER_PAGE } from 'src/constants';
 
 // This should be a real class/interface representing a user entity
 
@@ -91,8 +92,7 @@ export class UsersService {
 
   async getDecksFromUser(userId: string, page: number) : Promise<DeckDocument[]> {
     const user = await this.usersModel.findOne({ id: userId }).exec();
-    // There are maximum 12 decks in a page
-    const decks = user.decks.slice((page - 1) * 12, page * 12);
+    const decks = user.decks.slice((page - 1) * NUM_DECKS_PER_PAGE, page * NUM_DECKS_PER_PAGE);
     return Promise.all(decks.map(deckId => this.decksService.getDeckById(deckId)));
   }
 }
