@@ -7,7 +7,9 @@ import { User } from './schemas/users.schema';
 import { UserDocument } from './interfaces/users.interface';
 import { DeckDocument } from 'src/decks/interfaces/decks.interface';
 import { DecksService } from 'src/decks/decks.service';
-import { NUM_DECKS_PER_PAGE } from 'src/constants';
+import { CardsService } from 'src/cards/cards.service';
+import { CardDocument } from 'src/cards/interfaces/cards.interface';
+import { NUM_DECKS_PER_PAGE, NUM_CARDS_PER_PAGE } from 'src/constants';
 
 // This should be a real class/interface representing a user entity
 
@@ -16,6 +18,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly usersModel: Model<UserDocument>,
     @Inject(forwardRef(() => DecksService)) private readonly decksService: DecksService,
+    @Inject(forwardRef(() => CardsService)) private readonly cardsService: CardsService,
   ) {}
 
   async register(username: string, password: string): Promise<User> {
@@ -63,6 +66,12 @@ export class UsersService {
     };
 
     return this.usersModel.findOneAndUpdate(filter, update, { new: true });
+  }
+
+  async getCardsFromUser(userId: string, page: number) : Promise<CardDocument[]> {
+    const user = await this.usersModel.findOne({ id: userId }).exec();
+    const cards = user.cards.slice((page - 1) * NUM_CARDS_PER_PAGE, page * NUM_CARDS_PER_PAGE);
+    return Promise.all(cards.map(cardId => this.cardsService.getCardById(cardId)));
   }
 
   //// DECK ARRAY RELATED FUNCTIONS /////////////////////////////////////////////////////////////////////

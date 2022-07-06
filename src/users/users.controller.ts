@@ -1,12 +1,10 @@
 import {
     Controller,
-    Delete,
     Get,
     Post,
     Param,
     Res,
     Req,
-    Patch,
     UseGuards,
     Body,
     Query,
@@ -74,6 +72,18 @@ export class UsersController {
       try {
         const pageNum = parseInt(page);
         const result = await this.usersService.getDecksFromUser(req.user.id, pageNum);
+        res.status(200).send(result);
+      } catch (error: any) {
+        res.status(400).send({ error: "Bad request", error_description: error.message });
+      }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/cards')
+    async getCardsFromUser(@Req() req, @Res() res, @Query('page') page: string) {
+      try {
+        const pageNum = parseInt(page);
+        const result = await this.usersService.getCardsFromUser(req.user.id, pageNum);
         res.status(200).send(result);
       } catch (error: any) {
         res.status(400).send({ error: "Bad request", error_description: error.message });
