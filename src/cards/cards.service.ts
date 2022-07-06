@@ -11,8 +11,8 @@ import { UsersService } from 'src/users/users.service';
 export class CardsService {
   constructor(
     @Inject(forwardRef(() => DecksService)) private readonly decksService: DecksService,
+    @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService,
     @InjectModel(Card.name) private readonly cardsModel: Model<CardDocument>,
-    private readonly usersService: UsersService,
   ) {}
 
   // CRUD functions

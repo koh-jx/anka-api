@@ -12,7 +12,7 @@ import { UsersModule } from 'src/users/users.module';
   imports: [
     MongooseModule.forFeature([{ name: Deck.name, schema: DeckSchema }]),
     forwardRef(() => CardsModule),
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   controllers: [DecksController],
   providers: [DecksService],

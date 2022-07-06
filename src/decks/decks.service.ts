@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef} from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 
@@ -12,8 +12,8 @@ import { UsersService } from 'src/users/users.service';
 export class DecksService {
   constructor(
     @Inject(forwardRef(() => CardsService)) private readonly cardsService: CardsService,
+    @Inject(forwardRef(() => UsersService)) private readonly usersService: UsersService,
     @InjectModel(Deck.name) private readonly decksModel: Model<DeckDocument>,
-    private readonly usersService: UsersService,
   ) {}
 
   // CRUD functions
@@ -89,9 +89,11 @@ export class DecksService {
   }
 
   // Get all the card documents of the deck from the card db
-  async getCardsFromDeck(deckId: string): Promise<CardDocument[]> {
+  async getCardsFromDeck(deckId: string, page: number): Promise<CardDocument[]> {
     const deck = await this.decksModel.findOne({ id: deckId }).exec();
-    return Promise.all(deck.cards.map(id => this.cardsService.getCardById(id)));
+    // Each page has a maximum of 12 cards. The last page may or may not have 12 cards.
+    const cards = deck.cards.slice((page - 1) * 12, page * 12);
+    return Promise.all(cards.map(id => this.cardsService.getCardById(id)));
   }
 
 }
