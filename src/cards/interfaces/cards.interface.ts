@@ -8,6 +8,11 @@ export interface CardDocument extends mongoose.Document {
     id: string;
     front: CardFace;
     back: CardFace;
+    consecutiveRecallCount: number;
+    easinessFactor: number;
+    interval: number;
+    lastReviewedDate: Date;
+    dateCreated: Date;
     frontCardFaceProps: {
         frontTitle: string,
         frontDescription: string,

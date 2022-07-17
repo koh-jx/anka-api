@@ -13,6 +13,20 @@ export class Card {
   @Prop()
   decks: string[] = [];   // Array of ids each referencing Decks
 
+  // SM2-algorithm
+  @Prop({type: Number, default: 0})
+  consecutiveRecallCount: number;
+  @Prop({type: Number, default: 2.5})
+  easinessFactor: number;
+  @Prop({type: Number, default: 0})
+  interval: number;
+  
+  // Date variables
+  @Prop({type: Date, default: null})
+  lastReviewedDate : Date;
+  @Prop({type: Date, default: Date.now})
+  dateCreated : Date;
+
   @Prop(
     raw(
       {
