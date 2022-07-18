@@ -6,6 +6,7 @@ import { Card } from './schemas/cards.schema';
 import { CardDocument, CardFace } from './interfaces/cards.interface';
 import { DecksService } from 'src/decks/decks.service';
 import { UsersService } from 'src/users/users.service';
+import { assert } from 'console';
 
 @Injectable()
 export class CardsService {
@@ -43,6 +44,58 @@ export class CardsService {
       { id }, 
       temp, 
       { new: true });
+  }
+
+  async reviewCard(cardId: string, selfEvaluation: number) : Promise<CardDocument> {
+    const card = await this.cardsModel.findOne({ id: cardId }).exec();
+    const { consecutiveRecallCount, easinessFactor, interval } = card;
+    const { newConsecutiveRecallCount, newEasinessFactor, newInterval } = await this.sm2(
+      consecutiveRecallCount,
+      easinessFactor,
+      interval,
+      selfEvaluation
+    );
+    card.consecutiveRecallCount = newConsecutiveRecallCount;
+    card.easinessFactor = newEasinessFactor;
+    card.interval = newInterval;
+    await card.save();
+    return card;
+  }
+
+  // SM2 algorithm
+  async sm2(
+    consecutiveRecallCount: number,
+    easinessFactor: number,
+    interval: number,
+    selfEvaluation: number,
+  ): Promise<{ newConsecutiveRecallCount: number, newEasinessFactor: number, newInterval: number }> {
+    let newConsecutiveRecallCount = undefined;
+    let newEasinessFactor = undefined;
+    let newInterval = undefined;
+
+    if (selfEvaluation >= 3) {  // Correct response
+      if (consecutiveRecallCount === 0) {
+        newInterval = 1;
+      } else if (consecutiveRecallCount === 1) {
+        newInterval = 6;
+      } else {
+        newInterval = Math.round(interval * easinessFactor);
+      }
+      newConsecutiveRecallCount = consecutiveRecallCount + 1;
+    } else {    // Incorrect response
+       newConsecutiveRecallCount = 0;
+       newInterval = 1;
+    }
+
+    newEasinessFactor = easinessFactor + (0.1 - (5 - easinessFactor) * (0.08 * (5 - easinessFactor) + 0.02));
+    if (newEasinessFactor < 1.3) {
+      newEasinessFactor = 1.3;
+    }
+
+    assert(newInterval !== undefined, 'newInterval is undefined');
+    assert(newEasinessFactor !== undefined, 'newEasinessFactor is undefined');
+    assert(newConsecutiveRecallCount !== undefined, 'newConsecutiveRecallCount is undefined');
+    return { newConsecutiveRecallCount, newEasinessFactor, newInterval };
   }
 
   // Deletes a card from the database

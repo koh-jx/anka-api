@@ -83,7 +83,7 @@ export class CardsController {
     @Body('backDescription') backDescription: string,
   ) {
     try {
-      // Check is faces are valid
+      // Check if faces are valid
       if (!frontFace || !backFace) {
         res.status(400).send({ error: "Bad request", error_description: "Missing front or back face" });
       }
@@ -98,6 +98,28 @@ export class CardsController {
         backTitle,
         backDescription,
       )
+      res.status(200).send(card);
+    } catch (error : any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
+
+  // Edit a single card, finds the card via its id, then updates it
+  // Don't need to edit anywhere else, since card details are only stored in this collection
+  @UseGuards(JwtAuthGuard)
+  @Patch('/review')
+  async reviewCard(
+    @Res() res,
+    @Body('id') id: string,
+    @Body('selfEvaluation') selfEvaluation: number,
+  ) {
+    try {
+      // Check if score is valid
+      if (selfEvaluation < 0 || selfEvaluation > 5) {
+        res.status(400).send({ error: "Bad request", error_description: "Invalid Self-Evaluation score" });
+      }
+
+      const card = await this.cardsService.reviewCard(id, selfEvaluation)
       res.status(200).send(card);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });
