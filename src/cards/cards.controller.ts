@@ -119,7 +119,7 @@ export class CardsController {
         res.status(400).send({ error: "Bad request", error_description: "Invalid Self-Evaluation score" });
       }
 
-      const card = await this.cardsService.reviewCard(id, selfEvaluation)
+      const card = await this.cardsService.reviewCard(id, selfEvaluation);
       res.status(200).send(card);
     } catch (error : any) {
       res.status(400).send({ error: "Bad request", error_description: error.message });

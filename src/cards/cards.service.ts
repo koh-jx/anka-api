@@ -58,6 +58,7 @@ export class CardsService {
     card.consecutiveRecallCount = newConsecutiveRecallCount;
     card.easinessFactor = newEasinessFactor;
     card.interval = newInterval;
+    card.lastReviewedDate = new Date();
     await card.save();
     return card;
   }
