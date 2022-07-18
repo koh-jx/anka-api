@@ -96,4 +96,22 @@ export class DecksService {
     return Promise.all(cards.map(id => this.cardsService.getCardById(id)));
   }
 
+  async getCardsToReviewFromDeck(deckId: string): Promise<CardDocument[]> {
+    const deck = await this.decksModel.findOne({ id: deckId }).exec();
+    const cards = Promise.all(deck.cards.map(id => this.cardsService.getCardById(id)))
+    const filteredCards = (await cards).filter(card => this.isDueForReview(card));
+    return filteredCards;
+  }
+
+  isDueForReview = (card: CardDocument) => {
+    if (!card.lastReviewedDate) {
+        return true;
+    } else if (card.interval) {
+        const daysSinceLastReview = (new Date().getTime() - card.lastReviewedDate.getTime()) / (1000 * 60 * 60 * 24);
+        return daysSinceLastReview >= card.interval;
+    } else {
+        return false;
+    }
+  }
+
 }

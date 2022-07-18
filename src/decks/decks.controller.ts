@@ -129,6 +129,19 @@ export class DecksController {
       res.status(400).send({ error: "Bad request", error_description: error.message });
     }
   }
+
+  
+  // Get the cards in a deck as CardDocument[] (all to be reviewed)
+  @UseGuards(JwtAuthGuard)
+  @Get('/review-cards')
+  async getCardsToReviewFromDeck(@Res() res, @Query('id') id: string) {
+    try {
+      const result = await this.decksService.getCardsToReviewFromDeck(id);
+      res.status(200).send(result);
+    } catch (error: any) {
+      res.status(400).send({ error: "Bad request", error_description: error.message });
+    }
+  }
 }
 
   
