@@ -16,7 +16,8 @@ import { DecksModule } from './decks/decks.module';
     MongooseModule.forRootAsync({
       useFactory: () => {
         return {
-          uri: process.env.MONGO_URI,
+          // uri: process.env.MONGO_URI,
+          uri: process.env.MONGO_URL,
           useNewUrlParser: true,
           useUnifiedTopology: true,
         };
