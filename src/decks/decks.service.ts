@@ -116,10 +116,8 @@ export class DecksService {
   }
 
   private daysBetween(date1: Date, date2: Date) {
-    console.log("day1", date1.getDate())
-    console.log("day2", date2.getDate())
-    const one = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
-    const two = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+    const one = new Date(date1.getFullYear(), date1.getMonth(), date1.getUTCDate());
+    const two = new Date(date2.getFullYear(), date2.getMonth(), date2.getUTCDate());
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
     const millisBetween = two.getTime() - one.getTime();
     const days = millisBetween / millisecondsPerDay;
