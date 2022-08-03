@@ -108,7 +108,7 @@ export class DecksService {
         return true;
     } else if (card.interval) {
         const daysSinceLastReview = this.daysBetween(new Date(), card.lastReviewedDate);
-        console.log(new Date(), daysSinceLastReview);
+        console.log(new Date(), card.lastReviewedDate, daysSinceLastReview);
         return daysSinceLastReview >= card.interval;
     } else {
         return false;
@@ -120,6 +120,7 @@ export class DecksService {
     const two = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
     const millisBetween = two.getTime() - one.getTime();
+    console.log("getTimes", one.getTime(), two.getTime(), millisBetween);
     const days = millisBetween / millisecondsPerDay;
     return Math.abs(Math.round(days));
   }
