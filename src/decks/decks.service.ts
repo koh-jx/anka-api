@@ -108,6 +108,7 @@ export class DecksService {
         return true;
     } else if (card.interval) {
         const daysSinceLastReview = this.daysBetween(new Date(), card.lastReviewedDate);
+        console.log(daysSinceLastReview);
         return daysSinceLastReview >= card.interval;
     } else {
         return false;
